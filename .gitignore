@@ -1,0 +1,24 @@
+# Local Secrets & Environment Variables (NEVER COMMITTED TO GIT)
+.env
+.env.*
+!.env.example
+
+# Generated Clips, Raw Downloads & Local Browser Profiles
+downloads/
+clips/
+chrome_profile/
+browser_profile/
+kampanyalar/
+__pycache__/
+*.pyc
+*.mp4
+*.mp3
+*.ass
+*.jpg
+*.png
+!assets/*.png
+
+# Local Scratch Scripts
+auto_pilot.py
+clean_clip_maker.py
+viral_reaction_maker.py

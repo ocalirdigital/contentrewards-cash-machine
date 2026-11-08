@@ -393,6 +393,28 @@ def create_vertical_clip(
             "-c:v", "libx264", "-preset", "fast", "-crf", "20",
             "-c:a", "aac", "-b:a", "192k", str(out_file),
         ]
+    elif mode == "circle_facecam" and vo_text.strip() and Path(vo_text.strip().strip('"')).exists():
+        cam_path = str(Path(vo_text.strip().strip('"')))
+        fc = (
+            "[0:v]split=2[bgs][fgs];"
+            "[bgs]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=30:5,eq=brightness=-0.15[bg];"
+            "[fgs]scale=-2:1280,crop=1080:1280[fg];"
+            "[bg][fg]overlay=0:320[base];"
+            "[1:v]scale=310:310:force_original_aspect_ratio=increase,crop=310:310,format=yuva420p,"
+            "geq=lum='if(between(hypot(X-155,Y-155),144,152),255,p(X,Y))':"
+            "cb='if(between(hypot(X-155,Y-155),144,152),128,p(X,Y))':"
+            "cr='if(between(hypot(X-155,Y-155),144,152),128,p(X,Y))':"
+            "a='if(lte(hypot(X-155,Y-155),152),255,0)'[cam];"
+            f"[base][cam]overlay=720:1300,subtitles='{ass_esc}'[out_v]"
+        )
+        cmd_ff = [
+            "ffmpeg", "-y", "-i", str(raw_file), "-stream_loop", "-1", "-i", cam_path,
+            "-filter_complex", fc,
+            "-map", "[out_v]", "-map", "0:a?",
+            "-t", str(duration_sec), "-r", "30",
+            "-c:v", "libx264", "-preset", "fast", "-crf", "20",
+            "-c:a", "aac", "-b:a", "192k", str(out_file),
+        ]
     else:
         fc = (
             "[0:v]split=2[bgs][fgs];"
@@ -535,6 +557,7 @@ HTML_PAGE = """<!DOCTYPE html>
           <option value="clean_official">✅ Mode 1: Official Campaign Safe Mode (FTC Compliant • 1080p HD • Original Audio • No AI Voice)</option>
           <option value="fast_montage">🔥 Mode 2: 4-Scene Fast-Cut Action Montage (1080p Highlights • Original Audio)</option>
           <option value="ai_voice_captions">🎙️ Mode 3: AI Voiceover + Word-by-Word Highlighted Captions (Edge-TTS WordBoundary)</option>
+          <option value="circle_facecam">🔵 Mode 4: Circular Facecam Reaction Overlay (PiP Corner Webcam + Original Audio)</option>
         </select>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -662,7 +685,14 @@ function showBanner(text, color = '#60a5fa') {
 
 function toggleVoBox() {
   const m = document.getElementById('mode-select').value;
-  document.getElementById('vo-box').style.display = (m === 'ai_voice_captions') ? 'block' : 'none';
+  const box = document.getElementById('vo-box');
+  const inp = document.getElementById('vo-input');
+  if (m === 'ai_voice_captions' || m === 'circle_facecam') {
+    box.style.display = 'block';
+    inp.placeholder = (m === 'circle_facecam') ? 'C:\\\\path\\\\to\\\\reaction_facecam.mp4' : 'Call of Duty MW4 Season 1 just dropped and these new maps look insane!';
+  } else {
+    box.style.display = 'none';
+  }
 }
 
 function selectVideo(url) {

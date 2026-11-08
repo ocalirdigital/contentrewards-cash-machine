@@ -42,13 +42,15 @@ Many Whop / ContentRewards bounty campaigns (such as *Call of Duty: Modern Warfa
    - Click **✨ AI Auto-Fill Hook & Caption** next to any YouTube or stream URL.
    - Automatically inspects video metadata, locates the **#1 Most Replayed (Heatmap) peak second**, and generates a genuine on-screen headline, voiceover script, and FTC-compliant caption (`@brand` + `#Ad` on its own line) using **Gemini 2.5 Flash**, **OpenAI GPT-4o-mini**, or the **Built-in Smart Heatmap Analyzer**.
 
-3. **🎬 Three 1080x1920 (9:16) FFmpeg Rendering Modes**
+3. **🎬 Four 1080x1920 (9:16) FFmpeg Rendering Modes**
    - **✅ Mode 1 — Official Campaign Safe Mode (Default & FTC Compliant):**
      - Downloads true 1080p source video (`bestvideo[height<=1080]+bestaudio`), preserves 100% original audio (zero AI voice, zero third-party facecams), renders a blurred 9:16 ambient background + sharp center crop, and burns clean on-screen direction text at the top.
    - **🔥 Mode 2 — 4-Scene Fast-Cut Action Montage:**
      - Automatically extracts 4 high-energy segments across the video and concatenates them into a fast-paced vertical highlight reel with original audio.
    - **🎙️ Mode 3 — AI Voiceover + Word-by-Word Highlighted Captions:**
      - Generates natural neural speech via `edge-tts` (`WordBoundary` stream), ducks background audio (`35%`) under the voiceover (`150%`), and burns dynamic 2-word highlighted `.ass` subtitles in the lower third.
+   - **🔵 Mode 4 — Circular Facecam Reaction Overlay (Picture-in-Picture):**
+     - Masks any custom reaction/webcam video into a white-ringed circular webcam overlay in the bottom-right corner while preserving 100% original source audio.
 
 4. **🔥 Live ContentRewards Bounty Feed (`scraper.py`)**
    - Pulls 65+ active bounty campaigns and ready-to-clip YouTube source URLs directly from `contentrewards.com/c/discover`.
